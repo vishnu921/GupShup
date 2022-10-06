@@ -2,7 +2,8 @@ require('dotenv').config()
 const express = require("express")
 const PORT = process.env.PORT || 5000
 const connectDB = require('./config/db')
-
+const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
+const userRoutes = require('./routes/userRoutes')
 const chats = [
   {
     isGroupChat: false,
@@ -115,18 +116,14 @@ const chats = [
 connectDB()
 const app = express()
 
+app.use(express.json())
+
 app.get('/', (req, res) => {
   res.send('Welcome to API')
 })
 
-app.get('/api/chat', (req, res) => {
-  res.send(chats)
-})
-
-app.get('/api/chat/:id', (req, res) => {
-  const id = req.params.id
-  const singleChat = chats.find((c) => c._id === id)
-  res.send(singleChat)
-})
+app.use('/api/user', userRoutes)
+app.use(notFound)
+app.use(errorHandler)
 
 app.listen(PORT, console.log(`Listening to port ${PORT}`))
