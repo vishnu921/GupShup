@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require("express")
 const PORT = process.env.PORT || 5000
+const connectDB = require('./config/db')
 
 const chats = [
   {
@@ -111,6 +112,7 @@ const chats = [
   },
 ];
 
+connectDB()
 const app = express()
 
 app.get('/', (req, res) => {
