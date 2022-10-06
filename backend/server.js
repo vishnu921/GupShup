@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 5000
 const connectDB = require('./config/db')
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
 const userRoutes = require('./routes/userRoutes')
+const chatRoutes = require('./routes/chatRoutes')
 const chats = [
   {
     isGroupChat: false,
@@ -123,6 +124,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/user', userRoutes)
+app.use('/api/chat', chatRoutes)
+
 app.use(notFound)
 app.use(errorHandler)
 
