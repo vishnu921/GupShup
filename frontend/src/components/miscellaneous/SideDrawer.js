@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { Avatar, Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Toast, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Spinner, Text, Toast, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons"
 import { ChatState } from '../../context/ChatProvider'
 import ProfileModal from './ProfileModal'
@@ -74,7 +74,8 @@ const SideDrawer = () => {
       }
 
       const { data } = await axios.post('/api/chat', { userId }, config)
-
+      
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data)
       setLoadingChat(false)
       onClose()
@@ -87,6 +88,8 @@ const SideDrawer = () => {
         isClosable: true,
         position: "bottom-left",
       })
+      
+      setLoadingChat(false)
     }
   }
 
@@ -166,6 +169,7 @@ const SideDrawer = () => {
               />
             ))
           )}
+          {loadingChat && <Spinner ml="auto" d="flex" />}
         </DrawerBody>
       </DrawerContent>
     </Drawer>
