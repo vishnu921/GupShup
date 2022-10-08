@@ -5,8 +5,9 @@ import axios from "axios"
 import { ChatState } from '../context/ChatProvider'
 import ChatLoading from './ChatLoading'
 import { getSender } from '../config/ChatLogics'
+import GroupChatModal from './miscellaneous/GroupChatModal'
 
-const MyChats = () => {
+const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState()
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState()
 
@@ -41,7 +42,7 @@ const MyChats = () => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")))
     fetchChats()
 
-  }, [])
+  }, [fetchAgain])
 
   return <Box
     display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
@@ -64,7 +65,7 @@ const MyChats = () => {
         alignItems="center"
       >
         My Chats
-        {/* <GroupChatModal> */}
+        <GroupChatModal>
           <Button
             display="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
@@ -72,7 +73,7 @@ const MyChats = () => {
           >
             New Group Chat
           </Button>
-        {/* </GroupChatModal> */}
+        </GroupChatModal>
       </Box>
       <Box
         display="flex"
