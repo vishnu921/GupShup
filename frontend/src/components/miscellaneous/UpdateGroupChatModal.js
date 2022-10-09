@@ -81,8 +81,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
         },
         config
       );
-
-      console.log(data._id)
+      
       // setSelectedChat("");
       setSelectedChat(data)
       setFetchAgain(!fetchAgain)

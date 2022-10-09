@@ -23,7 +23,7 @@ const MyChats = ({ fetchAgain }) => {
       }
 
       const { data } = await axios.get("/api/chat", config)
-      console.log(data)
+      
       setChats(data)
 
     } catch (error) {
@@ -42,6 +42,7 @@ const MyChats = ({ fetchAgain }) => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")))
     fetchChats()
 
+    // eslint-disable-next-line
   }, [fetchAgain])
 
   return <Box
