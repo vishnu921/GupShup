@@ -7,7 +7,11 @@ import ProfileModal from './miscellaneous/ProfileModal';
 import UpdateGroupChatModal from './miscellaneous/UpdateGroupChatModal';
 import axios from 'axios'
 import "./styles.css"
-import ScrollableChat from './ScrollableChat';
+import ScrollableChat from './ScrollableChat'
+import io from 'socket.io-client'
+
+const ENDPOINT = "http://localhost:5000";
+let socket, SelectedChatCompare;
 
 const SingleChat = ({fetchAgain, setFetchAgain }) => {
 
@@ -15,6 +19,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
   const [loading, setLoading] = useState(false)
   const [newMessage, setNewMessage] = useState("")
   const { user, selectedChat, setSelectedChat } = ChatState()
+  const [socketConnected, setSocketConnected] = useState(false)
 
   const toast = useToast()
 
@@ -36,6 +41,8 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
 
       setMessages(data)
       setLoading(false)
+
+      socket.emit('join chat', selectedChat._id)
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -48,10 +55,28 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
       setLoading(false)
     }
   }
+  
+  useEffect(() => {
+    socket = io(ENDPOINT)
+    socket.emit("setup", user)
+    socket.on("connection", () => setSocketConnected(true))
+  }, [])
 
   useEffect(() => {
     fetchMessages()
+
+    SelectedChatCompare = selectedChat
   }, [selectedChat])
+  
+  useEffect(() => {
+    socket.on('message recieved', (newMessageRecieved) => {
+      if (!SelectedChatCompare || SelectedChatCompare._id !== newMessageRecieved.chat._id) {
+        // give notification
+      } else {
+        setMessages([...messages, newMessageRecieved])
+      }
+    })
+  })
   
 
   const sendMessage = async (event) => {
@@ -74,6 +99,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
           config
         )
         
+        socket.emit('new message', data)
         setMessages([...messages, data])
       } catch (error) {
         toast({
@@ -87,6 +113,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
       }
     }
   }
+  
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value)

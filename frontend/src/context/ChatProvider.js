@@ -16,7 +16,7 @@ const ChatProvider = ({ children }) => {
     setUser(userInfo)
 
     if (!userInfo) {
-      history.pushState('/')
+      history.push('/')
     }
   }, [history])
   
