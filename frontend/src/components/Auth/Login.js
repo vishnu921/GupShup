@@ -2,12 +2,15 @@ import { FormControl, FormLabel, Input, VStack, InputGroup, InputRightElement, B
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import axios from "axios"
+import { ChatState } from '../../context/ChatProvider'
 
 const Login = () => {
   const [show, setShow] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const { setUser } = ChatState()
 
   const toast = useToast()
   const history = useHistory()
@@ -53,7 +56,7 @@ const Login = () => {
 
       localStorage.setItem("userInfo", JSON.stringify(data))
       setLoading(false)
-
+      setUser(data)
       history.push("/chats")
 
     } catch (error) {
@@ -119,7 +122,7 @@ const Login = () => {
           setPassword("123456");
         }}
       >
-        Get Guest User Credentials
+        Login as Guest User
       </Button>
     </VStack>
   )
