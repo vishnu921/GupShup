@@ -7,119 +7,15 @@ const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
 const userRoutes = require('./routes/userRoutes')
 const chatRoutes = require('./routes/chatRoutes')
 const messageRoutes = require('./routes/messageRoutes')
-const chats = [
-  {
-    isGroupChat: false,
-    users: [
-      {
-        name: "John Doe",
-        email: "john@example.com",
-      },
-      {
-        name: "Piyush",
-        email: "piyush@example.com",
-      },
-    ],
-    _id: "617a077e18c25468bc7c4dd4",
-    chatName: "John Doe",
-  },
-  {
-    isGroupChat: false,
-    users: [
-      {
-        name: "Guest User",
-        email: "guest@example.com",
-      },
-      {
-        name: "Piyush",
-        email: "piyush@example.com",
-      },
-    ],
-    _id: "617a077e18c25468b27c4dd4",
-    chatName: "Guest User",
-  },
-  {
-    isGroupChat: false,
-    users: [
-      {
-        name: "Anthony",
-        email: "anthony@example.com",
-      },
-      {
-        name: "Piyush",
-        email: "piyush@example.com",
-      },
-    ],
-    _id: "617a077e18c2d468bc7c4dd4",
-    chatName: "Anthony",
-  },
-  {
-    isGroupChat: true,
-    users: [
-      {
-        name: "John Doe",
-        email: "jon@example.com",
-      },
-      {
-        name: "Piyush",
-        email: "piyush@example.com",
-      },
-      {
-        name: "Guest User",
-        email: "guest@example.com",
-      },
-    ],
-    _id: "617a518c4081150716472c78",
-    chatName: "Friends",
-    groupAdmin: {
-      name: "Guest User",
-      email: "guest@example.com",
-    },
-  },
-  {
-    isGroupChat: false,
-    users: [
-      {
-        name: "Jane Doe",
-        email: "jane@example.com",
-      },
-      {
-        name: "Piyush",
-        email: "piyush@example.com",
-      },
-    ],
-    _id: "617a077e18c25468bc7cfdd4",
-    chatName: "Jane Doe",
-  },
-  {
-    isGroupChat: true,
-    users: [
-      {
-        name: "John Doe",
-        email: "jon@example.com",
-      },
-      {
-        name: "Piyush",
-        email: "piyush@example.com",
-      },
-      {
-        name: "Guest User",
-        email: "guest@example.com",
-      },
-    ],
-    _id: "617a518c4081150016472c78",
-    chatName: "Chill Zone",
-    groupAdmin: {
-      name: "Guest User",
-      email: "guest@example.com",
-    },
-  },
-];
+const morgan = require('morgan')
 
 connectDB()
 const app = express()
 
 app.use(express.json())
+
+// Logger
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 app.use('/api/user', userRoutes)
 app.use('/api/chat', chatRoutes)
@@ -144,7 +40,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(notFound)
 app.use(errorHandler)
 
-const server = app.listen(PORT, console.log(`Listening to port ${PORT}`))
+const server = require('http').createServer(app);
 
 const io = require('socket.io')(server, {
   pingTimeout: 60000,
@@ -186,3 +82,5 @@ io.on("connection", (socket) => {
     socket.leave(userData._id)
   })
 })
+
+server.listen(PORT, console.log(`Listening to port ${PORT}`));
