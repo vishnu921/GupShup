@@ -89,7 +89,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
     socket.on('message recieved', (newMessageRecieved) => {
       if (!SelectedChatCompare || SelectedChatCompare._id !== newMessageRecieved.chat._id) {
         // give notification
-        if (!notifications.includes(newMessageRecieved)) {
+        if (newMessageRecieved.sender._id !== user._id && !notifications.includes(newMessageRecieved)) {
           setNotifications([newMessageRecieved, ...notifications])
           setFetchAgain(!fetchAgain)
         }
@@ -112,7 +112,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
         }
 
         setNewMessage("")
-        const { data } = await axios.post(
+        await axios.post(
           "/api/message",
           {
             content: newMessage,
@@ -120,9 +120,6 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
           },
           config
         )
-        
-        socket.emit('new message', data)
-        setMessages([...messages, data])
       } catch (error) {
         toast({
           title: "Error Occured!",
