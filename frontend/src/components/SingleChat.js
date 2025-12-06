@@ -71,8 +71,12 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
     socket = io(ENDPOINT)
     socket.emit("setup", user)
     socket.on("connected", () => setSocketConnected(true))
-    socket.on('typing', () => setIsTyping(true))
-    socket.on('stop typing', () => setIsTyping(false))
+    socket.on('typing', (userId) => {
+      if (userId !== user._id) setIsTyping(true)
+  })
+    socket.on('stop_typing', (userId) => {
+      if (userId !== user._id) setIsTyping(false)
+  })
 
     // eslint-disable-next-line
   }, [])
@@ -102,7 +106,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
-      socket.emit('stop typing', selectedChat._id)
+      socket.emit('stop_typing', selectedChat._id, user._id)
       try {
         const config = {
           headers: {
@@ -142,7 +146,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
 
     if (!typing) {
       setTyping(true)
-      socket.emit('typing', selectedChat._id)
+      socket.emit('typing', selectedChat._id, user._id)
     }
     
     let lastTypingTime = new Date().getTime()
@@ -153,7 +157,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
       let timeDiff = timeNow - lastTypingTime
 
       if (timeDiff >= timerLength && typing) {
-        socket.emit('stop typing', selectedChat._id)
+        socket.emit('stop_typing', selectedChat._id, user._id)
         setTyping(false)
       }
     }, timerLength)
