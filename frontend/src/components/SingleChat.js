@@ -53,7 +53,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
       setMessages(data)
       setLoading(false)
 
-      socket.emit('join chat', selectedChat._id)
+      socket.emit('join_chat', selectedChat._id)
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -90,7 +90,7 @@ const SingleChat = ({fetchAgain, setFetchAgain }) => {
 
   
   useEffect(() => {
-    socket.on('message recieved', (newMessageRecieved) => {
+    socket.on('message_received', (newMessageRecieved) => {
       if (!SelectedChatCompare || SelectedChatCompare._id !== newMessageRecieved.chat._id) {
         // give notification
         if (newMessageRecieved.sender._id !== user._id && !notifications.includes(newMessageRecieved)) {
