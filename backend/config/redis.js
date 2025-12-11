@@ -25,12 +25,14 @@ function registerEvents(client) {
     });
 }
 
+function getClient(url) {
+    const client = new Redis(url);
+    registerEvents(client);
+    return client;
+}
 
-const pubClient = new Redis(REDIS_URL);
-const subClient = new Redis(REDIS_URL);
-
-registerEvents(pubClient);
-registerEvents(subClient);
+const pubClient = getClient(REDIS_URL);
+const subClient = getClient(REDIS_URL);
 
 module.exports = {
     pubClient,
