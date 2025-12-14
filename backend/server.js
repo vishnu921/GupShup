@@ -41,36 +41,6 @@ app.use(notFound)
 app.use(errorHandler)
 
 const server = require('http').createServer(app);
-
-const io = require('socket.io')(server, {
-  pingTimeout: 60000,
-  cors: {
-    origin: "http://localhost:3000",
-  }
-})
-
-app.set('io', io);
-
-io.on("connection", (socket) => {
-  console.log("connected to socket.io")
-
-  socket.on('setup', (userData) => {
-    socket.join(userData._id)
-    socket.emit('connected')
-  })
-
-  socket.on('join_chat', (room) => {
-    socket.join(room)
-    console.log('User joined Room: ' + room)
-  })
-
-  socket.on('typing', (room, userId) => socket.in(room).emit('typing', userId))
-  socket.on('stop_typing', (room, userId) => socket.in(room).emit('stop_typing', userId))
-
-  socket.off('setup', () => {
-    console.log("USER DISCONNECTED")
-    socket.leave(userData._id)
-  })
-})
+const io = require('./config/socket')(server);
 
 server.listen(PORT, console.log(`Listening to port ${PORT}`));

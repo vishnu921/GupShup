@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const Message = require('../models/messageModel')
 const Chat = require('../models/chatModel')
 const User = require('../models/userModel')
+const { pubClient } = require('../config/redis');
 
 const sendMessage = asyncHandler(async (req, res) => {
   const { content, chatId } = req.body
@@ -29,18 +30,14 @@ const sendMessage = asyncHandler(async (req, res) => {
 
     await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message })
 
-    const io = req.app.get('io');
-    const chat = message.chat;
-    if (!chat.users) console.log('chat users not defined');
-    else {
-      chat.users.forEach(user => {
-        // if (user._id == message.sender._id) return
-  
-        io.to(user._id.toString()).emit('message_received', message)
-      });
+    try {
+      const chatId = message.chat._id;
+      await pubClient.publish(chatId, JSON.stringify(message));
+    } catch (err) {
+      console.error(`Publish error :: channel: ${message?.chat?._id}`, err);
     }
 
-    res.json(message)
+    res.json(message);
   } catch (error) {
     res.status(400)
     throw new Error(error.message)
