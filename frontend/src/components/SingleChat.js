@@ -12,7 +12,7 @@ import io from 'socket.io-client'
 import Lottie from "react-lottie"
 import animationData from "../animations/typing.json"
 
-const ENDPOINT = "https://gupshup-mern.herokuapp.com/";
+const ENDPOINT = process.env.REACT_APP_SOCKET_ENDPOINT;
 let socket, SelectedChatCompare;
 
 const SingleChat = ({fetchAgain, setFetchAgain }) => {
