@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - webnet
+
+  app1:
+    container_name: app1
+    image: gupshup-backend
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      - webnet
+
+  app2:
+    container_name: app2
+    image: gupshup-backend
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      - webnet
+
+  app3:
+    container_name: app3
+    image: gupshup-backend
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      - webnet
+
+  haproxy:
+    image: haproxy:3.0-alpine
+    container_name: haproxy
+    depends_on:
+      - app1
+      - app2
+      - app3
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy
+    ports:
+      - "5000:5000"
+      - "8404:8404"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
