@@ -8,10 +8,17 @@ const subscribedChannels = new Set();
 const localRefCount = new Map(); // key: chatId string -> count number
 
 function initSocket(httpServer) {
+	const allowedOrigins = process.env.CORS_ORIGINS.split(',');
 	const io = new Server(httpServer, {
 		pingTimeout: 60000,
 		cors: {
-			origin: "http://localhost:3000",
+			origin: (origin, callback) => {
+				if (!origin || allowedOrigins.includes(origin)) {
+					callback(null, true);
+				} else {
+					callback(new Error('Not allowed by CORS'));
+				}
+			}
 		}
 	});
 
