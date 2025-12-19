@@ -1,13 +1,23 @@
-# GupShup - Chat APP
-This is a Full-stack Chat application where Users can start a chat with a single user or create a group chat.
+# GupShup - Scalable Chat APP
+This is a Scalable full-stack real-time Chat application where Users can start a chat with a single user or create a group chat.
+A full-stack real-time chat application — powered by:
 
-### Link: [gupshup-mern.herokuapp.com](https://gupshup-mern.herokuapp.com/)
+- **React.js** (frontend)
+- **Node.js + Express** (backend)
+- **MongoDB** (database)
+- **Redis** (socket event sharing)
+
+This app is built for scalability and speed and supports **multi-server socket scaling** using Redis, enabling horizontal scaling and real-time communication across multiple backend instances.
+
+### Link: [gupshup-chat.vercel.app](https://gupshup-chat.vercel.app/)
 
 ## Features
-* Sign-up and Log-in with JWT authentication and bcrypt password hashing
+* Real-time Chat with single user or with a group chat
+* Redis Pub/Sub to sync socket events across servers
+* Horizontally scalable architecture
 * Search users by name or email in the search bar
-* Chat with single user or create a group chat
 * Group creator has the admin control of the group chat
+* Live typing indicators
 
 ## Website View
 ![all](https://user-images.githubusercontent.com/59504389/197828307-10b9157a-4816-40d5-82a5-5a1f48da7cae.png)
